@@ -5,7 +5,7 @@ assert_counts = %{"haruhi" => 1, "asuka" => 2, "tomoko" => 0}
 
 defmodule WaifuFinder do
   @spec find(binary, [binary]) :: map
-  def find(str, waifus), do: find(str, waifus, %{})
+  def find(str, waifus), do: find(str, waifus, waifus |> Enum.map(&{&1, 0}) |> Map.new())
 
   @spec find(binary, [binary], map) :: map
   def find(<<>>, _, count), do: count
@@ -20,7 +20,7 @@ defmodule WaifuFinder do
         if match?(<<^waifu::binary-size(wf_len), _::binary>>, str) do
           Map.update(count, waifu, 1, &(&1 + 1))
         else
-          Map.update(count, waifu, 0, & &1)
+          count
         end
       end)
     )
