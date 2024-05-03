@@ -15,7 +15,9 @@ defmodule WaifuFinder do
       rest,
       waifus,
       Enum.reduce(waifus, count, fn waifu, count ->
-        if str_match?(str, waifu) do
+        wf_len = String.length(waifu)
+
+        if match?(<<^waifu::binary-size(wf_len), _::binary>>, str) do
           Map.update(count, waifu, 1, &(&1 + 1))
         else
           Map.update(count, waifu, 0, & &1)
@@ -23,12 +25,6 @@ defmodule WaifuFinder do
       end)
     )
   end
-
-  @spec str_match?(binary, binary) :: boolean
-  def str_match?(<<a, str_rest::binary>>, <<a, waifu_rest::binary>>), do: str_match?(str_rest, waifu_rest)
-  def str_match?(<<_a, _::binary>>, <<_b, _::binary>>), do: false
-  def str_match?(_, <<>>), do: true
-  def str_match?(<<>>, _), do: false
 end
 
 WaifuFinder.find(full_test, waifus)
